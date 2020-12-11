@@ -14,7 +14,6 @@ layout(binding = 0) uniform CameraUbo {
     mat4 camera[2];
 };
 
-// SDF stuff
 struct SDF {
     float dist;
     vec3 color;
@@ -50,21 +49,33 @@ SDF scene(vec3 pos) {
     );
 }
 
+const float CLIP_NEAR = 0.1; // Near clipping sphere
+const float CLIP_FAR = 1000.; // Far clipping sphere
+const int MAX_STEPS = 50; // Maximum sphere steps
+const float HIT_THRESHOLD = 0.001; // Minimum distance considered a hit
+const vec3 BACKGROUND = vec3(0.); // Backgroudn color
+
 void main() {
     mat4 cam_inv = inverse(camera[gl_ViewIndex]);
     vec3 origin = (cam_inv * vec4(vec3(0.), 1.)).xyz;
     vec3 ray_out = (cam_inv * vec4(fragPos.x, fragPos.y, -1., 1.)).xyz;
-
     vec3 unit_ray = normalize(ray_out - origin);
-	vec3 color = vec3(0.);
-    
-    vec3 pos = origin + unit_ray * 0.1;
-    for (int i = 0; i < 50; i++) {
+
+	vec3 color = BACKGROUND;
+    vec3 pos = origin + unit_ray * CLIP_NEAR;
+    for (int i = 0; i < MAX_STEPS; i++) {
         SDF hit = scene(pos);
-        if (hit.dist < 0.001) {
+
+        if (hit.dist < HIT_THRESHOLD) {
             color = hit.color;
             break;
         }
+
+        if (hit.dist > CLIP_FAR) {
+            color = BACKGROUND;
+            break;
+        }
+
         pos += unit_ray * hit.dist;
     }
 
