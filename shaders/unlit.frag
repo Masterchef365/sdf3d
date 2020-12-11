@@ -1,13 +1,18 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
+#extension GL_EXT_multiview : require
 
+// IO stuff
 layout(location = 0) in vec3 fragPos;
+layout(location = 0) out vec4 outColor;
 
 layout(binding = 1) uniform Animation {
-    float value;
-} anim;
+    float anim;
+};
 
-layout(location = 0) out vec4 outColor;
+layout(binding = 0) uniform CameraUbo {
+    mat4 camera[2];
+};
 
 // SDF stuff
 struct SDF {
@@ -48,14 +53,15 @@ SDF scene(vec3 pos) {
 
 
 void main() {
-    vec2 st = vec2(fragPos.x, -fragPos.y);
+    mat4 cam_inv = inverse(camera[gl_ViewIndex]);
+    vec3 origin = (cam_inv * vec4(vec3(0.), 1.)).xyz;
+    vec3 ray_out = (cam_inv * vec4(fragPos.x, fragPos.y, -1., 1.)).xyz;
 
-    vec3 initial_ray = vec3(st, 1.);
-    vec3 unit_ray = normalize(initial_ray);
+    vec3 unit_ray = normalize(ray_out - origin);
 	vec3 color = vec3(0.);
     
-    vec3 pos = initial_ray;
-    for (int i = 0; i < 100; i++) {
+    vec3 pos = ray_out;
+    for (int i = 0; i < 50; i++) {
         SDF hit = scene(pos);
         if (hit.dist < 0.001) {
             color = hit.color;
