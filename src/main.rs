@@ -67,9 +67,10 @@ impl App for MyApp {
                         Ok(material) => {
                             let old = std::mem::replace(&mut self.fullscreen.material, material);
                             engine.remove_material(old)?;
+                            println!("Loaded {:?}", p);
                         }
                         Err(e) => {
-                            println!("ERROR: {}", e.to_string());
+                            println!("ERROR: {}", e);
                         }
                     }
                 }
