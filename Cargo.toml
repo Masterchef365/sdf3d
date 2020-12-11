@@ -1,0 +1,10 @@
+[package]
+name = "sdf3d"
+version = "0.1.0"
+authors = ["Masterchef365 <duncan.freeman1@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+klystron = { path = "../klystron" }
+nalgebra = "0.22"
+anyhow = "1"
