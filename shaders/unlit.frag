@@ -60,7 +60,7 @@ void main() {
     vec3 unit_ray = normalize(ray_out - origin);
 	vec3 color = vec3(0.);
     
-    vec3 pos = ray_out;
+    vec3 pos = origin + unit_ray;
     for (int i = 0; i < 50; i++) {
         SDF hit = scene(pos);
         if (hit.dist < 0.001) {
