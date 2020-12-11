@@ -36,7 +36,7 @@ SDF cube(vec3 pos, vec3 origin, vec3 color, float side) {
 }
 
 SDF sdf_min(SDF a, SDF b) {
-    if (a.dist < b.dist) {
+    if (a.dist <= b.dist) {
         return a;
     } else {
         return b;
@@ -45,12 +45,10 @@ SDF sdf_min(SDF a, SDF b) {
 
 SDF scene(vec3 pos) {
     return sdf_min(
-        sphere(pos, vec3(0.168, 0.088, (1.800)), vec3(0.721,0.995,0.123), 0.8),
-        cube(pos, vec3(0., 0.460, (1.776)), vec3(0.995,0.467,0.002), 0.5)
+        sphere(pos, vec3(0.168, 0.088, (0.800)), vec3(0.721,0.995,0.123), 0.8),
+        cube(pos, vec3(0., 0.460, (0.776)), vec3(0.995,0.467,0.002), 0.5)
     );
 }
-
-
 
 void main() {
     mat4 cam_inv = inverse(camera[gl_ViewIndex]);

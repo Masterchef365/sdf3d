@@ -6,5 +6,7 @@ edition = "2018"
 
 [dependencies]
 klystron = { path = "../klystron" }
-nalgebra = "0.22"
 anyhow = "1"
+notify = "4.0"
+structopt = { version = "0.3", default-features = false }
+shaderc = "0.7"
